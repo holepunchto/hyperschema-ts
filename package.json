@@ -1,6 +1,6 @@
 {
   "name": "hyperschema-ts",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Generate TypeScript types from a Hyperschema",
   "exports": {
     "./package": "./package.json",
