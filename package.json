@@ -1,0 +1,67 @@
+{
+  "name": "hyperschema-ts",
+  "version": "0.0.1",
+  "description": "Generate TypeScript types from a Hyperschema",
+  "exports": {
+    "./package": "./package.json",
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs",
+      "default": "./index.cjs"
+    },
+    "./validation": {
+      "types": "./validation.d.ts",
+      "import": "./validation.mjs",
+      "default": "./validation.cjs"
+    }
+  },
+  "imports": {
+    "fs": {
+      "bare": "bare-fs",
+      "default": "fs"
+    },
+    "path": {
+      "bare": "bare-path",
+      "default": "path"
+    }
+  },
+  "files": [
+    "package.json",
+    "index.mjs",
+    "index.cjs",
+    "index.d.ts",
+    "validation.mjs",
+    "validation.cjs",
+    "validation.d.ts",
+    "lib"
+  ],
+  "devDependencies": {
+    "brittle": "^4.0.2",
+    "hyperschema": "^1.21.0",
+    "lunte": "^1.2.0",
+    "prettier": "^3.6.2",
+    "prettier-config-holepunch": "^2.0.0"
+  },
+  "peerDependencies": {
+    "hyperschema": "^1.21.0"
+  },
+  "scripts": {
+    "format": "prettier . --write",
+    "test": "brittle-bare test/index.js && brittle-node test/index.js",
+    "lint": "prettier . --check && lunte"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/holepunchto/hyperschema-ts.git"
+  },
+  "author": "Holepunch Inc",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/holepunchto/hyperschema-ts/issues"
+  },
+  "homepage": "https://github.com/holepunchto/hyperschema-ts",
+  "dependencies": {
+    "bare-fs": "^4.7.2",
+    "bare-path": "^3.0.1"
+  }
+}
