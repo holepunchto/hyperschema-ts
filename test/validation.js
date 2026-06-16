@@ -129,6 +129,47 @@ test('validator is in lockstep with compact-encoding', (t) => {
   t.is(c.decode(c.ipv4, c.encode(c.ipv4, '1.2.3.4')), '1.2.3.4')
 })
 
+test('json validation is in lockstep with compact-encoding', (t) => {
+  const schema = Hyperschema.from(null)
+  const ns = schema.namespace('example')
+  ns.register({ name: 'doc', fields: [{ name: 'payload', type: 'json' }] })
+
+  const accepts = (value) => Validation.validate(schema, '@example/doc', { payload: value }).valid
+  const roundTrips = (value) => {
+    try {
+      c.decode(c.json, c.encode(c.json, value))
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  const circular = {}
+  circular.self = circular
+
+  // Serializable values: validator accepts and ce round-trips. `{ fn }` is
+  // included because ce (like JSON) silently drops the function rather than
+  // throwing, so the validator must not reject it. NaN and Date stringify to a
+  // valid (if lossy) JSON value, so they are accepted, matching ce.
+  for (const v of [{ a: 1 }, [1, 2, 3], 'str', 42, true, { fn: () => {} }, NaN, new Date(0)]) {
+    t.ok(accepts(v), `accepts ${JSON.stringify(v)}`)
+    t.ok(roundTrips(v), 'ce round-trips it')
+  }
+
+  // Non-serializable values: ce throws, so the validator must reject them. A
+  // top-level symbol stringifies to undefined; a throwing toJSON must be caught
+  // and rejected, not propagated out of validate().
+  const throwingToJSON = {
+    toJSON() {
+      throw new Error('boom')
+    }
+  }
+  for (const v of [() => {}, 10n, { b: 1n }, circular, Symbol('x'), throwingToJSON]) {
+    t.absent(accepts(v), 'rejects non-serializable value')
+    t.absent(roundTrips(v), 'ce throws on it')
+  }
+})
+
 // ---- structural validation ----
 
 function structSchema() {
