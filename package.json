@@ -46,8 +46,10 @@
     "hyperschema": "^1.21.0"
   },
   "scripts": {
-    "format": "prettier . --write",
-    "test": "brittle-bare test/index.js && brittle-node test/index.js",
+    "format": "prettier . --write && lunte --fix",
+    "test": "npm run test:bare && npm run test:node",
+    "test:bare": "brittle-bare test/index.js",
+    "test:node": "brittle-node test/index.js",
     "lint": "prettier . --check && lunte"
   },
   "repository": {
